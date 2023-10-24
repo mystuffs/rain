@@ -26,6 +26,7 @@ void invokeHash(HashAlgorithm algot, uint64_t seed, std::vector<uint8_t>& buffer
     switch(hash_size) {
       case 64:
         rainstorm::rainstorm<64, bswap>(buffer.data(), buffer.size(), seed, temp_out.data());
+        break; // NOTE: I'm not sure whether it's a bug or an intentional approach. Assuming similar as Rainbow.
       case 128:
         rainstorm::rainstorm<128, bswap>(buffer.data(), buffer.size(), seed, temp_out.data());
         break;

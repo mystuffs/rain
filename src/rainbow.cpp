@@ -37,14 +37,15 @@
 
 namespace rainbow {
   // P to W are primes chosen for their excellent avalanche properties
-  static const uint64_t P        = UINT64_C(   0xFFFFFFFFFFFFFFFF) - 58;
-  static const uint64_t Q        = UINT64_C( 13166748625691186689);
-  static const uint64_t R        = UINT64_C(  1573836600196043749);
-  static const uint64_t S        = UINT64_C(  1478582680485693857);
-  static const uint64_t T        = UINT64_C(  1584163446043636637);
-  static const uint64_t U        = UINT64_C(  1358537349836140151);
-  static const uint64_t V        = UINT64_C(  2849285319520710901);
-  static const uint64_t W        = UINT64_C(  2366157163652459183);
+	// 445674c37b63d6c1cb0c0d16b3ecb14208a1e0f4b5d0de831ef41003620cef91 LICENSE.txt
+  static constexpr uint64_t P        = UINT64_C(   0xFFFFFFFFFFFFFFFF) - 58;
+  static constexpr uint64_t Q        = UINT64_C( 13166748625691186689);
+  static constexpr uint64_t R        = UINT64_C(  1573836600196043749);
+  static constexpr uint64_t S        = UINT64_C(  1478582680485693857);
+  static constexpr uint64_t T        = UINT64_C(  1584163446043636637);
+  static constexpr uint64_t U        = UINT64_C(  1358537349836140151);
+  static constexpr uint64_t V        = UINT64_C(  2849285319520710901);
+  static constexpr uint64_t W        = UINT64_C(  2366157163652459183);
 
   static inline void mixA(uint64_t* s) {
     uint64_t a = s[0], b = s[1], c = s[2], d = s[3];
@@ -176,21 +177,64 @@ namespace rainbow {
         mixB(h, seed);
 
         switch (chunk_len) {
-          case 15:  h[0] += (uint64_t)chunk[14] << 56; 
-          case 14:  h[1] += (uint64_t)chunk[13] << 48;
-          case 13:  h[2] += (uint64_t)chunk[12] << 40; 
-          case 12:  h[3] += (uint64_t)chunk[11] << 32;
-          case 11:  h[0] += (uint64_t)chunk[10] << 24;
-          case 10:  h[1] += (uint64_t)chunk[9] <<  16; 
-          case 9:   h[2] += (uint64_t)chunk[8] << 8;
-          case 8:   h[3] += chunk[7]; 
-          case 7:   h[0] += (uint64_t)chunk[6] << 48; 
-          case 6:   h[1] += (uint64_t)chunk[5] << 40;
-          case 5:   h[2] += (uint64_t)chunk[4] << 32;
-          case 4:   h[3] += (uint64_t)chunk[3] << 24;
-          case 3:   h[0] += (uint64_t)chunk[2] << 16;
-          case 2:   h[1] += (uint64_t)chunk[1] <<  8; 
-          case 1:   h[2] += (uint64_t)chunk[0];
+	   case 15:
+	     h[0] += static_cast<uint64_t>(chunk[14]) << 56;
+	     [[fallthrough]];
+
+	   case 14:
+	     h[1] += static_cast<uint64_t>(chunk[13]) << 48;
+	     [[fallthrough]];
+
+	   case 13:
+	     h[2] += static_cast<uint64_t>(chunk[12]) << 40;
+	     [[fallthrough]];
+
+	   case 12:
+	     h[3] += static_cast<uint64_t>(chunk[11]) << 32;
+	     [[fallthrough]];
+
+	   case 11:
+	     h[0] += static_cast<uint64_t>(chunk[10]) << 24;
+	     [[fallthrough]];
+
+	   case 10:
+	     h[1] += static_cast<uint64_t>(chunk[9]) <<  16;
+	     [[fallthrough]];
+
+	   case 9:
+	     h[2] += static_cast<uint64_t>(chunk[8]) << 8;
+	     [[fallthrough]];
+
+	   case 8:
+	     h[3] += chunk[7];
+	     [[fallthrough]];
+
+	   case 7:
+	     h[0] += static_cast<uint64_t>(chunk[6]) << 48;
+	     [[fallthrough]];
+
+	   case 6:
+	     h[1] += static_cast<uint64_t>(chunk[5]) << 40;
+	     [[fallthrough]];
+
+	   case 5:
+	     h[2] += static_cast<uint64_t>(chunk[4]) << 32;
+	     [[fallthrough]];
+
+	   case 4:
+	     h[3] += static_cast<uint64_t>(chunk[3]) << 24;
+	     [[fallthrough]];
+
+	   case 3:
+	     h[0] += static_cast<uint64_t>(chunk[2]) << 16;
+	     [[fallthrough]];
+
+	   case 2:
+	     h[1] += static_cast<uint64_t>(chunk[1]) <<  8;
+	     [[fallthrough]];
+
+	   case 1:
+	     h[2] += chunk[0];
         }
 
         mixA(h);
@@ -212,31 +256,31 @@ namespace rainbow {
       g -= h[2];
       g -= h[3];
 
-      PUT_U64<bswap>(g, (uint8_t *)out, 0);
+      PUT_U64<bswap>(g, static_cast<uint8_t *>(out), 0);
       if (this->hashsize == 128) {
         mixA(h);
         g = 0;
         g -= h[3];
         g -= h[2];
-        PUT_U64<bswap>(g, (uint8_t *)out, 8);
+        PUT_U64<bswap>(g, static_cast<uint8_t *>(out), 8);
       } else if ( this->hashsize == 256) {
         mixA(h);
         g = 0;
         g -= h[3];
         g -= h[2];
-        PUT_U64<bswap>(g, (uint8_t *)out, 8);
+        PUT_U64<bswap>(g, static_cast<uint8_t *>(out), 8);
         mixA(h);
         mixB(h, seed);
         mixA(h);
         g = 0;
         g -= h[3];
         g -= h[2];
-        PUT_U64<bswap>(g, (uint8_t *)out, 16);
+        PUT_U64<bswap>(g, static_cast<uint8_t *>(out), 16);
         mixA(h);
         g = 0;
         g -= h[3];
         g -= h[2];
-        PUT_U64<bswap>(g, (uint8_t *)out, 24);
+        PUT_U64<bswap>(g, static_cast<uint8_t *>(out), 24);
       }
 
       finalized = true;
@@ -246,7 +290,7 @@ namespace rainbow {
   // one big func mode (memory inefficient, but simple call)
   template <uint32_t hashsize, bool bswap>
   static void rainbow(const void* in, const size_t olen, const seed_t seed, void* out) {
-    const uint8_t * data = (const uint8_t *)in;
+    const uint8_t * data = static_cast<const uint8_t *>(in);
     uint64_t h[4] = {seed + olen + 1, seed + olen + 3, seed + olen + 5, seed + olen + 7};
     size_t len = olen;
     uint64_t g = 0;
@@ -284,21 +328,64 @@ namespace rainbow {
     mixB(h, seed);
 
     switch (len) {
-      case 15:  h[0] += (uint64_t)data[14] << 56; 
-      case 14:  h[1] += (uint64_t)data[13] << 48;
-      case 13:  h[2] += (uint64_t)data[12] << 40; 
-      case 12:  h[3] += (uint64_t)data[11] << 32;
-      case 11:  h[0] += (uint64_t)data[10] << 24;
-      case 10:  h[1] += (uint64_t)data[9] <<  16; 
-      case 9:   h[2] += (uint64_t)data[8] << 8;
-      case 8:   h[3] += data[7]; 
-      case 7:   h[0] += (uint64_t)data[6] << 48; 
-      case 6:   h[1] += (uint64_t)data[5] << 40;
-      case 5:   h[2] += (uint64_t)data[4] << 32;
-      case 4:   h[3] += (uint64_t)data[3] << 24;
-      case 3:   h[0] += (uint64_t)data[2] << 16;
-      case 2:   h[1] += (uint64_t)data[1] <<  8; 
-      case 1:   h[2] += (uint64_t)data[0];
+      case 15:
+	h[0] += static_cast<uint64_t>(data[14]) << 56;
+	[[fallthrough]];
+
+      case 14:
+	h[1] += static_cast<uint64_t>(data[13]) << 48;
+	[[fallthrough]];
+
+      case 13:
+	h[2] += static_cast<uint64_t>(data[12]) << 40;
+	[[fallthrough]];
+
+      case 12:
+	h[3] += static_cast<uint64_t>(data[11]) << 32;
+	[[fallthrough]];
+
+      case 11:
+	h[0] += static_cast<uint64_t>(data[10]) << 24;
+	[[fallthrough]];
+
+      case 10:
+	h[1] += static_cast<uint64_t>(data[9]) << 16;
+	[[fallthrough]];
+
+      case 9:
+	h[2] += static_cast<uint64_t>(data[8]) << 8;
+	[[fallthrough]];
+
+      case 8:
+	h[3] += data[7];
+	[[fallthrough]];
+
+      case 7:
+	h[0] += static_cast<uint64_t>(data[6]) << 48;
+	[[fallthrough]];
+
+      case 6:
+	h[1] += static_cast<uint64_t>(data[5]) << 40;
+	[[fallthrough]];
+
+      case 5:
+	h[2] += static_cast<uint64_t>(data[4]) << 32;
+	[[fallthrough]];
+
+      case 4:
+	h[3] += static_cast<uint64_t>(data[3]) << 24;
+	[[fallthrough]];
+
+      case 3:
+	h[0] += static_cast<uint64_t>(data[2]) << 16;
+	[[fallthrough]];
+
+      case 2:
+	h[1] += static_cast<uint64_t>(data[1]) << 8;
+	[[fallthrough]];
+
+      case 1:
+	h[2] += data[0];
     }
 
     mixA(h);
@@ -311,31 +398,31 @@ namespace rainbow {
     g -= h[2];
     g -= h[3];
 
-    PUT_U64<bswap>(g, (uint8_t *)out, 0);
+    PUT_U64<bswap>(g, static_cast<uint8_t *>(out), 0);
     if (hashsize == 128) {
       mixA(h);
       g = 0;
       g -= h[3];
       g -= h[2];
-      PUT_U64<bswap>(g, (uint8_t *)out, 8);
+      PUT_U64<bswap>(g, static_cast<uint8_t *>(out), 8);
     } else if ( hashsize == 256) {
       mixA(h);
       g = 0;
       g -= h[3];
       g -= h[2];
-      PUT_U64<bswap>(g, (uint8_t *)out, 8);
+      PUT_U64<bswap>(g, static_cast<uint8_t *>(out), 8);
       mixA(h);
       mixB(h, seed);
       mixA(h);
       g = 0;
       g -= h[3];
       g -= h[2];
-      PUT_U64<bswap>(g, (uint8_t *)out, 16);
+      PUT_U64<bswap>(g, static_cast<uint8_t *>(out), 16);
       mixA(h);
       g = 0;
       g -= h[3];
       g -= h[2];
-      PUT_U64<bswap>(g, (uint8_t *)out, 24);
+      PUT_U64<bswap>(g, static_cast<uint8_t *>(out), 24);
     }
   }
 }

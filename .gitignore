@@ -1,3 +1,4 @@
 rain/**/*
 rainsum
 .*.swp
+.DS_Store
